@@ -93,9 +93,10 @@ function generateIgANDecision(){
   if(bxAge!==null&&bxAge>2)extra.push('病理距今已逾 2 年，MEST-C 未必代表目前炎症活性；請依近期臨床資料重評。');
   if(k!==null&&k>=5.5)alerts.push('血鉀 ≥5.5 mmol/L：先釐清高血鉀成因與安全性，RAS 阻斷藥物調整不可自動進行');
   if(g<15)extra.push('eGFR <15：應加強 CKD G5／腎替代療法準備與保守治療 SDM；新藥試驗適用性有限。');
-  const standardOK=biopsy&&age>=18&&!preg&&!urgent&&!neph&&!infection&&g>=15;
+  const contraindicatedCombo=spar&&(ras==='optimized'||ras==='suboptimal'||(ras==='unknown'&&yes('ras')));
+  const standardOK=biopsy&&age>=18&&!preg&&!urgent&&!neph&&!infection&&!contraindicatedCombo&&g>=15;
   if(!standardOK){
-    const why=!biopsy?'先確認病理與診斷':preg?'先完成妊娠藥物安全規劃':urgent?'優先排除急性／快速進展腎炎':neph?'優先區分 MCD 樣或其他腎病症候群':infection?'先控制活動性感染':age<18?'改用兒科專家路徑':'優先進行 CKD G5 綜合照護';
+    const why=!biopsy?'先確認病理與診斷':preg?'先完成妊娠藥物安全規劃':urgent?'優先排除急性／快速進展腎炎':neph?'優先區分 MCD 樣或其他腎病症候群':infection?'先控制活動性感染':contraindicatedCombo?'先處理 sparsentan 與 ACEi/ARB 併用衝突':age<18?'改用兒科專家路徑':'優先進行 CKD G5 綜合照護';
     add(priority,'先完成特殊情境評估：'+why,'現階段不提供自動指定的 IgAN 新藥。由腎臟科確認鑑別診斷與急性處置後，再使用本決策工具。');
     add(follow,'近期優先追蹤','依臨床急迫性複查 Cr、eGFR、尿沉渣、尿蛋白、血壓及必要免疫／感染檢查；妊娠者增加產科評估。');
   }else if(!risk&&!declining){
